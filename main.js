@@ -371,11 +371,22 @@ class Picaro extends Personaje {
     let fuerzaAtaque = Math.round(Math.random() * this.ataque);
     let defensaObjetivo = Math.round(Math.random() * objetivo.defensa);
     
-    let danio = Math.max(1, (fuerzaAtaque + daga.danio) - defensaObjetivo);
+    let esCritico = false
+    let danio = 0
+
+    if (daga.estado == "Critico" && Math.random() < 0.1) {
+      esCritico = true
+      danio = Math.round(Math.max(1, fuerzaAtaque + daga.danio) * 1.5);
+    } else {
+      danio = Math.max(1, (fuerzaAtaque + daga.danio) - defensaObjetivo);
+    }
     objetivo.vida = Math.max(0, objetivo.vida - danio);
 
     console.log(`${this.nombre} atacó con ${daga.nombre} a ${objetivo.nombre}.`);
-    console.log(`Realizó ${danio} punto(s) de daño, a ${objetivo.nombre} le quedan ${objetivo.vida} punto(s) de vida.`); 
+    console.log(`Realizó ${danio} punto(s) de daño, a ${objetivo.nombre} le quedan ${objetivo.vida} punto(s) de vida.`);
+    if (esCritico) {
+      console.log(`¡Fue un golpe critico!`)
+    } 
     
     if (daga.estado == "Envenenado") {
       if (Math.random() < 0.3) {
