@@ -191,8 +191,6 @@ class Mago extends Personaje {
 
     const opciones = [
       () => this.atacar(objetivo),
-      () => this.atacar(objetivo),
-      () => this.hechizoBolaDeFuego(objetivo),
       () => this.hechizoBolaDeFuego(objetivo),
       () => this.hechizoRayo(objetivo)
     ]
@@ -372,7 +370,7 @@ class Picaro extends Personaje {
 
     let fuerzaAtaque = Math.round(Math.random() * this.ataque);
     let defensaObjetivo = Math.round(Math.random() * objetivo.defensa);
-
+    
     let danio = Math.max(1, (fuerzaAtaque + daga.danio) - defensaObjetivo);
     objetivo.vida = Math.max(0, objetivo.vida - danio);
 
@@ -380,10 +378,7 @@ class Picaro extends Personaje {
     console.log(`Realizó ${danio} punto(s) de daño, a ${objetivo.nombre} le quedan ${objetivo.vida} punto(s) de vida.`); 
     
     if (daga.estado == "Envenenado") {
-
-      let probabilidadEstado = Math.round(Math.random() * 100);
-
-      if (probabilidadEstado < 10) {
+      if (Math.random() < 0.3) {
 
         objetivo.estado = "Envenenado";
         console.log(`${objetivo.nombre} ha sido envenenado.`);
@@ -401,6 +396,7 @@ class Picaro extends Personaje {
     const opciones = [
       () => this.atacar(objetivo),
       () => this.ataqueConDaga(objetivo),
+      () => this.ataqueConDaga(objetivo)
     ]
 
     let eleccion = Math.floor(Math.random() * opciones.length);
@@ -409,20 +405,20 @@ class Picaro extends Personaje {
 }
 
 // Guerrero
-const Pepe = new Guerrero("Pepe", 115, 13, 10, 8, [
+const Pepe = new Guerrero("Pepe", 100, 13, 7, 8, [
   { nombre: "Hacha de Batalla", danio: 6 },
   { nombre: "Espada Larga", danio: 5 }
 ]);
 
-const Thomas = new Guerrero("Thomas", 110, 14, 9, 9, [
+const Thomas = new Guerrero("Thomas", 95, 14, 7, 9, [
   { nombre: "Mandoble Pesado", danio: 7 },
   { nombre: "Maza de Guerra", danio: 5 }
 ]);
 
 // Mago
-const Ignis = new Mago("Ignis", 80, 11, 6, 11, 25);
+const Ignis = new Mago("Ignis", 80, 11, 5, 11, 35);
 
-const Valeria = new Mago("Valeria", 85, 10, 7, 10, 30);
+const Valeria = new Mago("Valeria", 85, 10, 6, 10, 40);
 
 // Arquero
 const Sylvan = new Arquero("Sylvan", 90, 13, 7, 15, [
@@ -437,10 +433,10 @@ const Sylvan = new Arquero("Sylvan", 90, 13, 7, 15, [
 ]);
 
 // Clérigo
-const Eldrin = new Clerigo("Eldrin", 100, 11, 9, 7, 20);
+const Eldrin = new Clerigo("Eldrin", 100, 11, 8, 7, 30);
 
 // Pícaro
-const Shadow = new Picaro("Shadow", 80, 16, 5, 16, [
+const Shadow = new Picaro("Shadow", 85, 16, 5, 16, [
   { nombre: "Daga Envenenada", danio: 6, estado: "Envenenado" },
   { nombre: "Estilete Sombra", danio: 5, estado: "Critico" }
 ]);
