@@ -396,32 +396,25 @@ class Picaro extends Personaje {
    * @description escoge entre los metodos de ataque de la clase en la lista, para atacar a su objetivo
    */
   eleccionAtaque(objetivo) {
-
-    const opciones = [
-      () => this.atacar(objetivo),
-      () => this.ataqueConDaga(objetivo),
-    ]
-
-    let eleccion = Math.floor(Math.random() * opciones.length);
-    return opciones[eleccion]();
+    return Math.random() < 0.7 ? this.ataqueConDaga(objetivo) : this.atacar(objetivo);
   }
 }
 
 // Guerrero
-const Pepe = new Guerrero("Pepe", 100, 13, 7, 8, [
+const Pepe = new Guerrero("Pepe", 100, 11, 6, 8, [
   { nombre: "Hacha de Batalla", danio: 6 },
   { nombre: "Espada Larga", danio: 5 }
 ]);
 
-const Thomas = new Guerrero("Thomas", 95, 14, 7, 9, [
+const Thomas = new Guerrero("Thomas", 95, 12, 6, 9, [
   { nombre: "Mandoble Pesado", danio: 7 },
   { nombre: "Maza de Guerra", danio: 5 }
 ]);
 
 // Mago
-const Ignis = new Mago("Ignis", 80, 11, 5, 11, 35);
+const Ignis = new Mago("Ignis", 80, 12, 5, 11, 35);
 
-const Valeria = new Mago("Valeria", 85, 10, 6, 10, 40);
+const Valeria = new Mago("Valeria", 85, 11, 6, 10, 40);
 
 // Arquero
 const Sylvan = new Arquero("Sylvan", 90, 13, 7, 15, [
@@ -439,7 +432,7 @@ const Sylvan = new Arquero("Sylvan", 90, 13, 7, 15, [
 const Eldrin = new Clerigo("Eldrin", 100, 11, 8, 7, 30);
 
 // Pícaro
-const Shadow = new Picaro("Shadow", 85, 16, 5, 16, [
+const Shadow = new Picaro("Shadow", 85, 14, 5, 16, [
   { nombre: "Daga Envenenada", danio: 6, estado: "Envenenado" },
   { nombre: "Estilete Sombra", danio: 5, estado: "Critico" }
 ]);
@@ -496,7 +489,7 @@ function play(combatientes) {
   }
   
   if (combatientes.length == 1) {
-    console.log(`\nEl ganador es ${combatientes[0].nombre}`);
+    console.log(`\nEl ganador es el ${combatientes[0].constructor.name} ${combatientes[0].nombre}`);
   } else {
     console.log("Todos los combatientes han sido derrotados");
   }
