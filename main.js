@@ -189,14 +189,13 @@ class Mago extends Personaje {
    */
   eleccionAtaque(objetivo) {
 
-    const opciones = [
-      () => this.atacar(objetivo),
-      () => this.hechizoBolaDeFuego(objetivo),
-      () => this.hechizoRayo(objetivo)
-    ]
-
-    let eleccion = Math.floor(Math.random() * opciones.length);
-    return opciones[eleccion]();
+    if (this.mana >= 5) {
+      return Math.random() > 0.5 ? this.hechizoRayo(objetivo) : this.hechizoBolaDeFuego(objetivo);
+    } else if (this.mana >= 3) {
+      return this.hechizoBolaDeFuego(objetivo);
+    } else {
+      return this.atacar(objetivo);
+    }
   }
 }
 
@@ -248,14 +247,11 @@ class Arquero extends Personaje {
    */
   eleccionAtaque(objetivo) {
 
-    const opciones = [
-      () => this.atacar(objetivo),
-      () => this.disparoConFlecha(objetivo),
-      () => this.disparoConFlecha(objetivo)
-    ]
-
-    let eleccion = Math.floor(Math.random() * opciones.length);
-    return opciones[eleccion]();
+    if (this.flechas.length >= 0) {
+      return this.disparoConFlecha(objetivo);
+    } else {
+      return this.atacar(objetivo)
+    }
   }
 }
 
@@ -330,16 +326,13 @@ class Clerigo extends Personaje {
    */
   eleccionAtaque(objetivo) {
 
-    const opciones = [
-      () => this.atacar(objetivo),
-      () => this.atacar(objetivo),
-      () => this.magiaPlegaria(objetivo),
-      () => this.magiaPlegaria(objetivo),
-      () => this.magiaCurar(objetivo)
-    ]
-
-    let eleccion = Math.floor(Math.random() * opciones.length);
-    return opciones[eleccion]();
+    if ((this.vida <= this.vidaMax * 0.35) && this.mana >= 8) {
+      return this.magiaCurar(objetivo)
+    } else if (this.mana >= 6) {
+      return Math.random() < 0.8 ? this.magiaPlegaria(objetivo) : this.atacar(objetivo);
+    } else {
+      return this.atacar(objetivo);
+    }
   }
 }
 
@@ -374,7 +367,7 @@ class Picaro extends Personaje {
     let esCritico = false
     let danio = 0
 
-    if (daga.estado == "Critico" && Math.random() < 0.1) {
+    if (daga.estado == "Critico" && Math.random() < 0.2) {
       esCritico = true
       danio = Math.round(Math.max(1, fuerzaAtaque + daga.danio) * 1.5);
     } else {
@@ -407,7 +400,6 @@ class Picaro extends Personaje {
     const opciones = [
       () => this.atacar(objetivo),
       () => this.ataqueConDaga(objetivo),
-      () => this.ataqueConDaga(objetivo)
     ]
 
     let eleccion = Math.floor(Math.random() * opciones.length);
