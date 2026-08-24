@@ -10,6 +10,7 @@ class Personaje {
    * @param {number} ataque 
    * @param {number} defensa 
    * @param {number} velocidad
+   * @param {string} [estado="Normal"] 
    */
   constructor (nombre, vida, ataque, defensa, velocidad, estado = "Normal") {
     this.nombre = nombre;
@@ -17,6 +18,7 @@ class Personaje {
     this.ataque = ataque;
     this.defensa = defensa;
     this.velocidad = velocidad;
+    this.velParaTurnos = velocidad;
     this.estado = estado;
   }
 
@@ -401,7 +403,7 @@ class Picaro extends Personaje {
 }
 
 // Guerrero
-const Pepe = new Guerrero("Pepe", 100, 11, 6, 8, [
+const Pepe = new Guerrero("Pepe", 100, 9, 8, 8, [
   { nombre: "Hacha de Batalla", danio: 6 },
   { nombre: "Espada Larga", danio: 5 }
 ]);
@@ -461,6 +463,7 @@ function hello(combatientes) {
   };
 }
 
+/* Esto lo hizo mayormente la IA
 function play(combatientes) {
   hello(combatientes);
 
@@ -481,7 +484,7 @@ function play(combatientes) {
       if (posibleObjetivo.vida == 0) {
         console.log(`El ${posibleObjetivo.constructor.name} ${posibleObjetivo.nombre} ha sido derrotado.`);
       }
-      peleador.validarEstado()
+      peleador.validarEstado();
     }
 
     combatientes = combatientes.filter(c => c.vida > 0);
@@ -494,5 +497,50 @@ function play(combatientes) {
     console.log("Todos los combatientes han sido derrotados");
   }
 }
+*/
 
-play(listaCombatientes);
+/**
+ * @function alternative
+ * 
+ * @description (Mi propia version de como calcular las velocidades) - Funcion para iniciar y ejecutar el juego.
+ * 
+ * @param {Array} combatientes - lista de objetos
+ */
+function alternative(combatientes) {
+  hello(combatientes);
+
+  let contador = 1
+  while (combatientes.length > 1) {
+    console.log(`\nRonda ${contador}\n`);
+    
+    combatientes.forEach(c => c.velParaTurnos = Math.round(Math.random() * c.velocidad));
+    combatientes.sort((combatienteA, combatienteB) => combatienteB.velParaTurnos - combatienteA.velParaTurnos)
+
+    for (let c of combatientes) {
+      if (c.vida <= 0) continue;
+
+      // Determinar el objetivo
+      let listaPosibleObjetivo = combatientes.filter(p => p.vida > 0 && p !== c);
+      if (listaPosibleObjetivo == 0) break;
+      let atacado = listaPosibleObjetivo[Math.floor(Math.random() * listaPosibleObjetivo.length)];
+
+      //Ejecutar accion y validar estado
+      c.eleccionAtaque(atacado);
+      if (atacado.vida <= 0) {
+        console.log(`El ${atacado.constructor.name} ${atacado.nombre} ha sido derrotado.`)
+      }
+      c.validarEstado();
+    }
+    
+    combatientes = combatientes.filter(c => c.vida > 0);
+    contador++;
+  }
+
+  if (combatientes.length == 1) {
+    console.log(`\nEl ganador es el ${combatientes[0].constructor.name} ${combatientes[0].nombre}`);
+  } else {
+    console.log("Todos los combatientes han sido derrotados");
+  }
+}
+
+alternative(listaCombatientes);
