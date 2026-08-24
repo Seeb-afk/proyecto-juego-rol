@@ -513,6 +513,7 @@ function alternative(combatientes) {
   while (combatientes.length > 1) {
     console.log(`\nRonda ${contador}\n`);
     
+    // Modifica el atributo velParaTurnos en base a velocidad
     combatientes.forEach(c => c.velParaTurnos = Math.round(Math.random() * c.velocidad));
     combatientes.sort((combatienteA, combatienteB) => combatienteB.velParaTurnos - combatienteA.velParaTurnos)
 
