@@ -64,6 +64,13 @@ class Personaje {
     }
   }
 
+  /**
+   * @method validarParalisis
+   * 
+   * @description Verifica si esta paralizado, si lo esta, pierde 1 turno de ataque
+   * 
+   * @returns Bool
+   */
   validarParalisis() {
     if (this.estado === "Paralizado") {
       console.log(`${this.nombre} no puede moverse por la parálisis este turno.`);
@@ -171,7 +178,7 @@ class Mago extends Personaje {
   /**
    * @method hechizoRayo
    * 
-   * @description Ataca al objetivo con el hechizo Rayo
+   * @description Ataca al objetivo con el hechizo Rayo, y tambien puede paralizar
    * 
    * @param {object} objetivo 
    */
@@ -333,7 +340,7 @@ class Clerigo extends Personaje {
     }
     this.mana = Math.max(0, this.mana - 8);
 
-    let cantidadCuracion = Math.round(Math.random() * (this.vidaMax / 4)) + 5;
+    let cantidadCuracion = Math.round(Math.random() * (this.vidaMax / 4)) + 3;
     this.vida = Math.min(this.vidaMax, this.vida + cantidadCuracion);
 
     console.log(`${this.nombre} ha usado Curación, recupera ${cantidadCuracion} punto(s) de vida`);
@@ -402,12 +409,9 @@ class Picaro extends Personaje {
       console.log(`¡Fue un golpe critico!`)
     } 
     
-    if (objetivo.estado === "Normal" && daga.estado === "Envenenado") {
-      if (Math.random() < 0.3) {
-
-        objetivo.estado = "Envenenado";
-        console.log(`${objetivo.nombre} ha sido envenenado.`);
-      }
+    if (Math.random() < 0.3 && objetivo.estado === "Normal" && daga.estado === "Envenenado") {
+      objetivo.estado = "Envenenado";
+      console.log(`${objetivo.nombre} ha sido envenenado.`);
     }
   }
 
@@ -422,33 +426,33 @@ class Picaro extends Personaje {
 }
 
 // Guerrero
-const Pepe = new Guerrero("Pepe", 150, 14, 10, 10, [
+const Pepe = new Guerrero("Pepe", 130, 14, 10, 10, [
   { nombre: "Hacha de Batalla", danio: 10 },
   { nombre: "Espada Larga", danio: 8 }
 ]);
 
-const Thomas = new Guerrero("Thomas", 135, 13, 9, 11, [
+const Thomas = new Guerrero("Thomas", 115, 13, 9, 11, [
   { nombre: "Mandoble Pesado", danio: 12 },
   { nombre: "Maza de Guerra", danio: 9 }
 ]);
 
 // Mago
-const Ignis = new Mago("Ignis", 90, 20, 6, 13, 85);
+const Ignis = new Mago("Ignis", 70, 20, 6, 13, 85);
 
-const Valeria = new Mago("Valeria", 105, 18, 7, 12, 90);
+const Valeria = new Mago("Valeria", 85, 18, 7, 12, 90);
 
 // Arquero
-const Sylvan = new Arquero("Sylvan", 120, 22, 8, 18, [
-  { nombre: "Flecha de Caza", danio: 9, cantidad: 7 },
-  { nombre: "Flecha Perforante", danio: 12, cantidad: 5 },
-  { nombre: "Flecha explosiva", danio: 15, cantidad: 3 }
+const Sylvan = new Arquero("Sylvan", 100, 22, 8, 18, [
+  { nombre: "Flecha de Caza", danio: 9, cantidad: 5 },
+  { nombre: "Flecha Perforante", danio: 12, cantidad: 4 },
+  { nombre: "Flecha explosiva", danio: 15, cantidad: 2 }
 ]);
 
 // Clérigo
-const Eldrin = new Clerigo("Eldrin", 150, 16, 9, 9, 85);
+const Eldrin = new Clerigo("Eldrin", 130, 16, 9, 9, 85);
 
 // Pícaro
-const Shadow = new Picaro("Shadow", 105, 22, 7, 19, [
+const Shadow = new Picaro("Shadow", 85, 22, 7, 19, [
   { nombre: "Daga Envenenada", danio: 9, estado: "Envenenado" },
   { nombre: "Estilete Sombra", danio: 8, estado: "Critico" }
 ]);
