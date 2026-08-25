@@ -340,7 +340,7 @@ class Clerigo extends Personaje {
     }
     this.mana = Math.max(0, this.mana - 8);
 
-    let cantidadCuracion = Math.round(Math.random() * (this.vidaMax / 4)) + 3;
+    let cantidadCuracion = Math.round(Math.random() * (this.vidaMax / 10)) + 1;
     this.vida = Math.min(this.vidaMax, this.vida + cantidadCuracion);
 
     console.log(`${this.nombre} ha usado Curación, recupera ${cantidadCuracion} punto(s) de vida`);
@@ -355,7 +355,7 @@ class Clerigo extends Personaje {
   eleccionAtaque(objetivo) {
 
     if ((this.vida <= this.vidaMax * 0.35) && this.mana >= 8) {
-      return this.magiaCurar(objetivo)
+      return Math.random() < 0.8 ? this.magiaCurar(objetivo) : this.magiaPlegaria(objetivo);
     } else if (this.mana >= 6) {
       return Math.random() < 0.8 ? this.magiaPlegaria(objetivo) : this.atacar(objetivo);
     } else {
@@ -449,7 +449,7 @@ const Sylvan = new Arquero("Sylvan", 100, 22, 8, 18, [
 ]);
 
 // Clérigo
-const Eldrin = new Clerigo("Eldrin", 130, 16, 9, 9, 85);
+const Eldrin = new Clerigo("Eldrin", 120, 16, 8, 8, 85);
 
 // Pícaro
 const Shadow = new Picaro("Shadow", 85, 22, 7, 19, [
