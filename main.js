@@ -63,6 +63,16 @@ class Personaje {
       console.log(`${this.nombre} recibe ${danioVeneno} puntos de daño por envenenamiento. Le quedan ${this.vida} punto(s) de vida.`)
     }
   }
+
+  validarParalisis() {
+    if (this.estado === "Paralizado") {
+      console.log(`${this.nombre} no puede moverse por la parálisis este turno.`);
+      console.log(`${this.nombre} ha vuelto a la normalidad.`);
+      this.estado = "Normal";
+      return true;
+    }
+    return false;
+  }
 }
 
 class Guerrero extends Personaje {
@@ -151,7 +161,7 @@ class Mago extends Personaje {
     let fuerzaAtaque = Math.round(Math.random() * this.ataque);
     let defensaObjetivo = Math.round(Math.random() * objetivo.defensa);
 
-    let danio = Math.max(1, (fuerzaAtaque + 6) - defensaObjetivo);
+    let danio = Math.max(1, (fuerzaAtaque + 10) - defensaObjetivo);
     objetivo.vida = Math.max(0, objetivo.vida - danio);
 
     console.log(`${this.nombre} atacó con el hechizo Bola de Fuego a ${objetivo.nombre}.`);
@@ -177,11 +187,16 @@ class Mago extends Personaje {
     let fuerzaAtaque = Math.round(Math.random() * this.ataque);
     let defensaObjetivo = Math.round(Math.random() * objetivo.defensa);
 
-    let danio = Math.max(1, (fuerzaAtaque + 9) - defensaObjetivo);
+    let danio = Math.max(1, (fuerzaAtaque + 15) - defensaObjetivo);
     objetivo.vida = Math.max(0, objetivo.vida - danio);
 
     console.log(`${this.nombre} atacó con el hechizo Rayo a ${objetivo.nombre}.`);
     console.log(`Realizó ${danio} punto(s) de daño, a ${objetivo.nombre} le quedan ${objetivo.vida} punto(s) de vida.`);
+
+    if (Math.random() < 0.2 && objetivo.estado === "Normal") {
+      objetivo.estado = "Paralizado";
+      console.log(`${objetivo.nombre} ha sido paralizado, no podrá moverse en su siguiente acción.`)
+    }
   }
 
   /**
@@ -239,7 +254,11 @@ class Arquero extends Personaje {
 
     console.log(`${this.nombre} atacó disparando con su arco la ${flecha.nombre} a ${objetivo.nombre}.`);
     console.log(`Realizó ${danio} punto(s) de daño, a ${objetivo.nombre} le quedan ${objetivo.vida} punto(s) de vida.`);
-    this.flechas.splice(indice, 1);
+    
+    flecha.cantidad--;
+    if (flecha.cantidad === 0) {
+      this.flechas.splice(indice, 1);
+    }
   }
 
   /**
@@ -249,10 +268,10 @@ class Arquero extends Personaje {
    */
   eleccionAtaque(objetivo) {
 
-    if (this.flechas.length >= 0) {
-      return this.disparoConFlecha(objetivo);
+    if (this.flechas.length > 0) {
+      return Math.random() < 0.8 ? this.disparoConFlecha(objetivo) : this.atacar(objetivo);
     } else {
-      return this.atacar(objetivo)
+      return this.atacar(objetivo);
     }
   }
 }
@@ -292,7 +311,7 @@ class Clerigo extends Personaje {
     let fuerzaAtaque = Math.round(Math.random() * this.ataque);
     let defensaObjetivo = Math.round(Math.random() * objetivo.defensa);
 
-    let danio = Math.max(1, (fuerzaAtaque + 9) - defensaObjetivo);
+    let danio = Math.max(1, (fuerzaAtaque + 14) - defensaObjetivo);
     objetivo.vida = Math.max(0, objetivo.vida - danio);
 
     console.log(`${this.nombre} atacó con el hechizo Plegaria a ${objetivo.nombre}.`);
@@ -314,7 +333,7 @@ class Clerigo extends Personaje {
     }
     this.mana = Math.max(0, this.mana - 8);
 
-    let cantidadCuracion = Math.round(Math.random() * (this.vidaMax / 4)) + 1;
+    let cantidadCuracion = Math.round(Math.random() * (this.vidaMax / 4)) + 5;
     this.vida = Math.min(this.vidaMax, this.vida + cantidadCuracion);
 
     console.log(`${this.nombre} ha usado Curación, recupera ${cantidadCuracion} punto(s) de vida`);
@@ -383,7 +402,7 @@ class Picaro extends Personaje {
       console.log(`¡Fue un golpe critico!`)
     } 
     
-    if (daga.estado == "Envenenado") {
+    if (objetivo.estado === "Normal" && daga.estado === "Envenenado") {
       if (Math.random() < 0.3) {
 
         objetivo.estado = "Envenenado";
@@ -403,40 +422,35 @@ class Picaro extends Personaje {
 }
 
 // Guerrero
-const Pepe = new Guerrero("Pepe", 100, 9, 8, 8, [
-  { nombre: "Hacha de Batalla", danio: 6 },
-  { nombre: "Espada Larga", danio: 5 }
+const Pepe = new Guerrero("Pepe", 150, 14, 10, 10, [
+  { nombre: "Hacha de Batalla", danio: 10 },
+  { nombre: "Espada Larga", danio: 8 }
 ]);
 
-const Thomas = new Guerrero("Thomas", 95, 12, 6, 9, [
-  { nombre: "Mandoble Pesado", danio: 7 },
-  { nombre: "Maza de Guerra", danio: 5 }
+const Thomas = new Guerrero("Thomas", 135, 13, 9, 11, [
+  { nombre: "Mandoble Pesado", danio: 12 },
+  { nombre: "Maza de Guerra", danio: 9 }
 ]);
 
 // Mago
-const Ignis = new Mago("Ignis", 80, 12, 5, 11, 35);
+const Ignis = new Mago("Ignis", 90, 20, 6, 13, 85);
 
-const Valeria = new Mago("Valeria", 85, 11, 6, 10, 40);
+const Valeria = new Mago("Valeria", 105, 18, 7, 12, 90);
 
 // Arquero
-const Sylvan = new Arquero("Sylvan", 90, 13, 7, 15, [
-  { nombre: "Flecha de Caza", danio: 6 },
-  { nombre: "Flecha de Caza", danio: 6 },
-  { nombre: "Flecha de Caza", danio: 6 },
-  { nombre: "Flecha de Caza", danio: 6 },
-  { nombre: "Flecha Perforante", danio: 8 },
-  { nombre: "Flecha Perforante", danio: 8 },
-  { nombre: "Flecha Perforante", danio: 8 },
-  { nombre: "Flecha explosiva", danio: 10 }
+const Sylvan = new Arquero("Sylvan", 120, 22, 8, 18, [
+  { nombre: "Flecha de Caza", danio: 9, cantidad: 7 },
+  { nombre: "Flecha Perforante", danio: 12, cantidad: 5 },
+  { nombre: "Flecha explosiva", danio: 15, cantidad: 3 }
 ]);
 
 // Clérigo
-const Eldrin = new Clerigo("Eldrin", 100, 11, 8, 7, 30);
+const Eldrin = new Clerigo("Eldrin", 150, 16, 9, 9, 85);
 
 // Pícaro
-const Shadow = new Picaro("Shadow", 85, 14, 5, 16, [
-  { nombre: "Daga Envenenada", danio: 6, estado: "Envenenado" },
-  { nombre: "Estilete Sombra", danio: 5, estado: "Critico" }
+const Shadow = new Picaro("Shadow", 105, 22, 7, 19, [
+  { nombre: "Daga Envenenada", danio: 9, estado: "Envenenado" },
+  { nombre: "Estilete Sombra", danio: 8, estado: "Critico" }
 ]);
 
 // Lista de peleadores
@@ -458,7 +472,7 @@ const listaCombatientes = [
  * @param {Array} combatientes 
  */
 function hello(combatientes) {
-  for (peleador of combatientes) {
+  for (let peleador of combatientes) {
     peleador.saludar();
   };
 }
@@ -517,20 +531,25 @@ function alternative(combatientes) {
     combatientes.forEach(c => c.velParaTurnos = Math.round(Math.random() * c.velocidad));
     combatientes.sort((combatienteA, combatienteB) => combatienteB.velParaTurnos - combatienteA.velParaTurnos)
 
-    for (let c of combatientes) {
-      if (c.vida <= 0) continue;
+    for (let pj of combatientes) {
+      if (pj.vida <= 0) continue;
+      if (pj.validarParalisis()) continue;
 
       // Determinar el objetivo
-      let listaPosibleObjetivo = combatientes.filter(p => p.vida > 0 && p !== c);
-      if (listaPosibleObjetivo == 0) break;
+      let listaPosibleObjetivo = combatientes.filter(p => p.vida > 0 && p !== pj);
+      if (listaPosibleObjetivo.length == 0) break;
       let atacado = listaPosibleObjetivo[Math.floor(Math.random() * listaPosibleObjetivo.length)];
 
-      //Ejecutar accion y validar estado
-      c.eleccionAtaque(atacado);
+
+      //Ejecutar accion y validar envenenamiento
+      pj.eleccionAtaque(atacado);
       if (atacado.vida <= 0) {
         console.log(`El ${atacado.constructor.name} ${atacado.nombre} ha sido derrotado.`)
       }
-      c.validarEstado();
+      pj.validarEstado();
+      if (pj.vida === 0) {
+        console.log(`El ${pj.constructor.name} ${pj.nombre} ha sucumbido al veneno y ha sido derrotado.`);
+      }
     }
     
     combatientes = combatientes.filter(c => c.vida > 0);
@@ -538,9 +557,9 @@ function alternative(combatientes) {
   }
 
   if (combatientes.length == 1) {
-    console.log(`\nEl ganador es el ${combatientes[0].constructor.name} ${combatientes[0].nombre}`);
+    console.log(`\nEl ganador es el ${combatientes[0].constructor.name} ${combatientes[0].nombre}.`);
   } else {
-    console.log("Todos los combatientes han sido derrotados");
+    console.log("\nTodos los combatientes han sido derrotados.");
   }
 }
 
